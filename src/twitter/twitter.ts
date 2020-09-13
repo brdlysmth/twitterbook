@@ -4,7 +4,7 @@ import Twitter from 'twitter';
 
 const baseUrlV1 = 'https://api.twitter.com/1.1/';
 // const baseUrlV2 = 'https://api.twitter.com/2/';
-const username = 'acebucko';
+const username = 'naval';
 const count = 100;
 const requestUrl = `statuses/user_timeline.json?screen_name=${username}&count=${count}`;
 
