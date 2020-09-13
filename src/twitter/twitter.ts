@@ -12,8 +12,7 @@ const config: AxiosRequestConfig = {
   method: 'GET',
   url: baseUrlV1 + requestUrl,
   headers: {
-    Authorization:
-      'Bearer AAAAAAAAAAAAAAAAAAAAADOqHgEAAAAAVFkfrWt%2BZCL7qDK369fxPMfgPww%3DJdlBSw9bZatJ3gGFJyo4iai8WCIzsPSsk4JE6vxA2UdARsgR8j',
+    Authorization: 'Bearer ' + process.env.TWITTER_BEAERER_TOKEN,
     Cookie:
       'personalization_id="v1_TSJfzR2GfyxXgMuHoBV+Qw=="; guest_id=v1%3A160002132457731207'
   }
