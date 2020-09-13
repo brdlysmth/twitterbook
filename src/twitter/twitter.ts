@@ -24,9 +24,6 @@ axios(config)
     // console.log(JSON.stringify(response.data));
     const data = response.data;
     filterTwitterResponse(data);
-    fs.writeFile('twitter-res.json', JSON.stringify(data), (error) => {
-      console.log(error);
-    });
   })
   .catch(function (error) {
     console.log(error);
@@ -37,6 +34,10 @@ const filterTwitterResponse = (data: Twitter.ResponseData) => {
     return {
       tweet: tweet.text
     };
+  });
+
+  fs.writeFile('first.json', JSON.stringify(filteredData), (error) => {
+    console.log(error);
   });
 
   console.log(filteredData);
