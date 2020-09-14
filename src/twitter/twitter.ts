@@ -2,22 +2,24 @@ import axios, { AxiosRequestConfig } from 'axios';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import Twitter from 'twitter';
+import PDFDocument from 'pdfkit';
+import { write } from 'pdfkit/js/data';
 
 dotenv.config();
 
 const baseUrlV1 = 'https://api.twitter.com/1.1/';
 // const baseUrlV2 = 'https://api.twitter.com/2/';
 const username = 'naval';
-const count = 100;
-const requestUrl = `statuses/user_timeline.json?screen_name=${username}&count=${count}`;
+
+const count = 200;
+const lastMax = 1283507218294292500;
+const requestUrl = `statuses/user_timeline.json?screen_name=${username}&max_id=${lastMax}&count=${count}`;
 
 const config: AxiosRequestConfig = {
   method: 'GET',
   url: baseUrlV1 + requestUrl,
   headers: {
-    Authorization: 'Bearer ' + process.env.TWITTER_BEARER_TOKEN,
-    Cookie:
-      'personalization_id="v1_TSJfzR2GfyxXgMuHoBV+Qw=="; guest_id=v1%3A160002132457731207'
+    Authorization: 'Bearer ' + process.env.TWITTER_BEARER_TOKEN
   }
 };
 
@@ -35,6 +37,7 @@ const filterTwitterResponse = (data: Twitter.ResponseData) => {
   const filteredData = data.map((tweet: any) => {
     return {
       tweet: tweet.text,
+      tweetId: tweet.id,
       date: tweet.created_at,
       favorites: tweet.favorite_count
     };
@@ -50,5 +53,26 @@ const filterTwitterResponse = (data: Twitter.ResponseData) => {
     console.log(error);
   });
 
-  console.log(filteredData);
+  newFilteredData.forEach((e: any, index: any) => {
+    // console.log(e.tweet);
+    writeToPDF(e.tweet, index);
+  });
+  // writeToPDF(newFilteredData, newFilteredData.length);
+  console.log(newFilteredData.length);
+};
+
+// FIXME: do I pass raw text here or entire json?
+/**
+ * https://pdfkit.org/
+ */
+const writeToPDF = (text: string, name: string) => {
+  const doc = new PDFDocument();
+  doc.pipe(fs.createWriteStream(`${name}.pdf`)); // write to PDF
+  // doc.pipe(res); // HTTP response
+  // add stuff to PDF here using methods described below...
+  // TODO: need to unpack json
+  doc.text(text);
+  // finalize the PDF and end the stream
+
+  doc.end();
 };
