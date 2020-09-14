@@ -55,7 +55,7 @@ const filterTwitterResponse = (data: Twitter.ResponseData) => {
 
   newFilteredData.forEach((e: any, index: any) => {
     // console.log(e.tweet);
-    writeToPDF(e.tweet, index);
+    writeToPDF(e.tweet, username, index);
   });
   // writeToPDF(newFilteredData, newFilteredData.length);
   console.log(newFilteredData.length);
@@ -66,9 +66,9 @@ const filterTwitterResponse = (data: Twitter.ResponseData) => {
 /**
  * https://pdfkit.org/
  */
-const writeToPDF = (text: string, name: string) => {
+const writeToPDF = (text: string, username: string, index: string) => {
   const doc = new PDFDocument();
-  doc.pipe(fs.createWriteStream(`${name}.pdf`)); // write to PDF
+  doc.pipe(fs.createWriteStream(`${username}+${index}.pdf`)); // write to PDF
   // doc.pipe(res); // HTTP response
 
   doc.text(text);
