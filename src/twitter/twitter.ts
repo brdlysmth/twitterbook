@@ -67,11 +67,29 @@ const filterTwitterResponse = (data: Twitter.ResponseData) => {
  * https://pdfkit.org/
  */
 const writeToPDF = (text: string, username: string, index: string) => {
-  const doc = new PDFDocument();
+  const doc = new PDFDocument({
+    margins: {
+      top: 250,
+      bottom: 250,
+      left: 75,
+      right: 75
+    }
+  });
+
   doc.pipe(fs.createWriteStream(`${username}+${index}.pdf`)); // write to PDF
   // doc.pipe(res); // HTTP response
 
-  doc.text(text);
+  const textWithAuthor = text + '\n' + `--@${username}`;
+  const author = `--@${username}`;
+
+  doc.text(text, {
+    width: 200
+  });
+
+  doc.text(author, {
+    width: 200,
+    align: 'right'
+  });
 
   // finalize the PDF and end the stream
   doc.end();
