@@ -94,3 +94,8 @@ const writeToPDF = (text: string, username: string, index: string) => {
   // finalize the PDF and end the stream
   doc.end();
 };
+
+// TODO:
+/**
+ *  Write general algorithm to iterate through twitter's api constraints
+ */
