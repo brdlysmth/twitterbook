@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run build && npm run html && node build/index.js",
+    "start:twitter": "npm run build && node build/twitter/twitter.js",
     "start:dev": "nodemon",
     "html": "copyfiles src/**/*.html build/",
     "build": "rimraf ./build && tsc",
