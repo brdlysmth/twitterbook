@@ -62,6 +62,7 @@ const filterTwitterResponse = (data: Twitter.ResponseData) => {
 };
 
 // FIXME: do I pass raw text here or entire json?
+// TODO: bundle them in single pdf
 /**
  * https://pdfkit.org/
  */
@@ -69,10 +70,9 @@ const writeToPDF = (text: string, name: string) => {
   const doc = new PDFDocument();
   doc.pipe(fs.createWriteStream(`${name}.pdf`)); // write to PDF
   // doc.pipe(res); // HTTP response
-  // add stuff to PDF here using methods described below...
-  // TODO: need to unpack json
-  doc.text(text);
-  // finalize the PDF and end the stream
 
+  doc.text(text);
+
+  // finalize the PDF and end the stream
   doc.end();
 };
