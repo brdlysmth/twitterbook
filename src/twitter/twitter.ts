@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import dotenv from 'dotenv';
 import fs from 'fs';
-import { data } from 'pdfkit/js/reference';
 import Twitter from 'twitter';
 import * as format from '../tools/format';
 
@@ -14,11 +13,12 @@ const username = 'naval';
 const count = 200;
 const lastMax = 1283507218294292500;
 // const lastMax = 1262252319594344400;
-const requestUrl = `statuses/user_timeline.json?screen_name=${username}&max_id=${lastMax}&count=${count}`;
+const firstRequestUrl = `statuses/user_timeline.json?screen_name=${username}&count=${count}`;
+const secondRequestUrl = `statuses/user_timeline.json?screen_name=${username}&max_id=${lastMax}&count=${count}`;
 
 const config: AxiosRequestConfig = {
   method: 'GET',
-  url: baseUrlV1 + requestUrl,
+  url: baseUrlV1 + firstRequestUrl,
   headers: {
     Authorization: 'Bearer ' + process.env.TWITTER_BEARER_TOKEN
   }
@@ -62,26 +62,6 @@ const filterTwitterResponse = (data: Twitter.ResponseData) => {
   console.log(newFilteredData.length);
 };
 
-// TODO:
-/**
- *  Write general algorithm to iterate through twitter's api constraints
- */
-
-const getTweets = (config: AxiosRequestConfig) => {
-  return axios(config)
-    .then(function (response) {
-      // console.log(JSON.stringify(response.data));
-      // const data = response.data;
-      // filterTwitterResponse(data);
-      // const lastId = getLastId(data);
-      // console.log(lastId);
-      return response.data;
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-};
-
 /**
  * Grab the earliest tweet id from the last twitter response
  * @param data
@@ -92,46 +72,53 @@ const getLastId = (data: Twitter.ResponseData) => {
   return lastMax;
 };
 
-const configUpdate = (config: AxiosRequestConfig, lastId: number) => {
-  const newCount = 100;
-  const newBaseUrlV1 = 'https://api.twitter.com/1.1/';
-  // const baseUrlV2 = 'https://api.twitter.com/2/';
-  const newUsername = 'naval';
-  const newRequestUrl = `statuses/user_timeline.json?screen_name=${newUsername}&max_id=${lastId}&count=${newCount}`;
-
-  const newConfig: AxiosRequestConfig = {
-    method: 'GET',
-    url: newBaseUrlV1 + newRequestUrl,
-    headers: {
-      Authorization: 'Bearer ' + process.env.TWITTER_BEARER_TOKEN
-    }
-  };
-
-  return newConfig;
-};
-
-const runRequests = async (
-  config: AxiosRequestConfig,
-  numberOfRequests: number
-) => {
-  const loopLength = new Array(numberOfRequests).fill(0);
-
-  loopLength.forEach(async (loop) => {
-    const data = await getTweets(config);
-    const lastId = getLastId(data);
-    const newConfig = configUpdate(config, lastId);
-    console.log(newConfig);
-    await getTweets(newConfig);
-  });
-};
-
-// getTweets(config);
-
-runRequests(config, 4);
-
 /**
  *    --> initial config, number of requests
  *    --> get last id
  *    --> update config
  *    --> run request again
  */
+
+const requestTweets = async (config: AxiosRequestConfig, lastId?: number) => {
+  const baseUrlV1 = 'https://api.twitter.com/1.1/';
+  // const baseUrlV2 = 'https://api.twitter.com/2/';
+  const username = 'naval';
+
+  if (lastId) {
+    config.url =
+      baseUrlV1 +
+      `statuses/user_timeline.json?screen_name=${username}&max_id=${lastId}&count=200`;
+
+    const data = await axios(config)
+      .then(function (response) {
+        return response.data;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    processTweets(data);
+  } else {
+    const data = await axios(config)
+      .then(function (response) {
+        return response.data;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    processTweets(data);
+  }
+};
+
+const processTweets = async (data: Twitter.ResponseData) => {
+  const lastId = getLastId(data);
+  console.log(lastId);
+
+  if (lastId > 1200000000000000000) {
+    await requestTweets(config, lastId);
+  }
+  return;
+};
+
+requestTweets(config);
