@@ -1,18 +1,22 @@
 import PDFDocument from 'pdfkit';
 import fs from 'fs';
 import { write } from 'pdfkit/js/data';
+import { document } from 'pdfkit/js/page';
+import * as navalTweets from '../collections/naval-master.json';
+import { json } from 'express';
+
+type Collection = {
+  tweet: string;
+  tweetId: number;
+  date: string;
+  favorites: number;
+};
 
 /**
  * https://pdfkit.org/
  */
 
-/**
- *
- * @param text
- * @param username
- * @param index
- */
-export const writeToPDF = (tweet: string, username: string, index: string) => {
+export const createPDFDocument = (username: string) => {
   const doc = new PDFDocument({
     margins: {
       top: 250,
@@ -22,21 +26,48 @@ export const writeToPDF = (tweet: string, username: string, index: string) => {
     }
   });
 
-  doc.pipe(fs.createWriteStream(`${username}+${index}.pdf`)); // write to PDF
-  // doc.pipe(res); // HTTP response
+  doc.font('Courier');
+  doc.fontSize(25);
 
-  // const textWithAuthor = tweet + '\n' + `--@${username}`;
-  const author = `--@${username}`;
+  doc.pipe(fs.createWriteStream(`${username}.pdf`)); // write to PDF
 
-  doc.text(tweet, {
-    width: 200
+  return doc;
+};
+/**
+ *
+ * @param text
+ * @param username
+ * @param index
+ */
+export const writeToPDF = (
+  doc: PDFKit.PDFDocument,
+  tweet: string,
+  username: string,
+  index: number
+) => {
+  const author = `-- @${username}`;
+
+  doc.addPage().text(tweet, {
+    width: 300
   });
 
   doc.text(author, {
-    width: 200,
+    width: 300,
     align: 'right'
   });
 
-  // finalize the PDF and end the stream
-  doc.end();
+  // pdf stream not yet finalized
 };
+
+const readJSON = (jsonFile: Collection[], username: string) => {
+  const currentDocument = createPDFDocument(username);
+
+  Object.values(jsonFile).forEach((collection, index) => {
+    writeToPDF(currentDocument, collection.tweet, username, index);
+  });
+
+  // finalize the PDF and end the stream
+  currentDocument.end();
+};
+
+readJSON(navalTweets, 'naval');

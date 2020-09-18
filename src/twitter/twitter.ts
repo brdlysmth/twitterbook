@@ -116,39 +116,4 @@ const writeTweetToJSON = (
   );
 };
 
-const writeTweetToPDF = (data: Twitter.ResponseData) => {
-  const filteredData = data.map((tweet: any) => {
-    return {
-      tweet: tweet.text,
-      tweetId: tweet.id,
-      date: tweet.created_at,
-      favorites: tweet.favorite_count
-    };
-  });
-
-  const newFilteredData = filteredData.filter((tweet: any) => {
-    if (tweet.favorites > 10000) {
-      return tweet;
-    }
-  });
-
-  newFilteredData.forEach((e: any, index: any) => {
-    // console.log(e.tweet);
-    format.writeToPDF(e.tweet, username, index);
-  });
-  // writeToPDF(newFilteredData, newFilteredData.length);
-  console.log(newFilteredData.length);
-};
-
-// TODO: write JSON to PDF
-
-const readJSON = (jsonFile: JSON) => {
-  // json files to read
-  // read json files
-  // json.extend(master, new)
-  // return concatenated single json file
-};
-
-const tweetJSONtoPDF = (tweetJSON: JSON) => {};
-
 requestTweets(config);
