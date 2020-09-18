@@ -29,8 +29,8 @@ const config: AxiosRequestConfig = {
  * @param data
  */
 const getLastId = (data: Twitter.ResponseData) => {
+  if (!data) return null;
   const lastMax = Object.values(data)[Object.values(data).length - 1].id;
-  console.log(lastMax);
   return lastMax;
 };
 
@@ -61,7 +61,6 @@ const requestTweets = async (config: AxiosRequestConfig, lastId?: number) => {
 
     processTweets(data);
     writeTweetToJSON(data, username, lastId);
-    writeTweetToPDF(data);
   } else {
     const data = await axios(config)
       .then(function (response) {
@@ -79,7 +78,7 @@ const processTweets = async (data: Twitter.ResponseData) => {
   const lastId = getLastId(data);
   console.log(lastId);
 
-  if (lastId > 1200000000000000000) {
+  if (lastId > 1100000000000000000) {
     await requestTweets(config, lastId);
   }
   return;
@@ -99,6 +98,7 @@ const writeTweetToJSON = (
     };
   });
 
+  // FIXME: bug: if data doesn't return any favorites > 10000
   const newFilteredData = filteredData.filter((tweet: any) => {
     if (tweet.favorites > 10000) {
       return tweet;
