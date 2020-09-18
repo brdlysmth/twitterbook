@@ -24,44 +24,6 @@ const config: AxiosRequestConfig = {
   }
 };
 
-// axios(config)
-//   .then(function (response) {
-//     // console.log(JSON.stringify(response.data));
-//     const data = response.data;
-//     filterTwitterResponse(data);
-//   })
-//   .catch(function (error) {
-//     console.log(error);
-//   });
-
-const filterTwitterResponse = (data: Twitter.ResponseData) => {
-  const filteredData = data.map((tweet: any) => {
-    return {
-      tweet: tweet.text,
-      tweetId: tweet.id,
-      date: tweet.created_at,
-      favorites: tweet.favorite_count
-    };
-  });
-
-  const newFilteredData = filteredData.filter((tweet: any) => {
-    if (tweet.favorites > 10000) {
-      return tweet;
-    }
-  });
-
-  fs.writeFile('first.json', JSON.stringify(newFilteredData), (error) => {
-    console.log(error);
-  });
-
-  newFilteredData.forEach((e: any, index: any) => {
-    // console.log(e.tweet);
-    format.writeToPDF(e.tweet, username, index);
-  });
-  // writeToPDF(newFilteredData, newFilteredData.length);
-  console.log(newFilteredData.length);
-};
-
 /**
  * Grab the earliest tweet id from the last twitter response
  * @param data
@@ -98,6 +60,8 @@ const requestTweets = async (config: AxiosRequestConfig, lastId?: number) => {
       });
 
     processTweets(data);
+    writeTweetToJSON(data, username, lastId);
+    writeTweetToPDF(data);
   } else {
     const data = await axios(config)
       .then(function (response) {
@@ -120,5 +84,71 @@ const processTweets = async (data: Twitter.ResponseData) => {
   }
   return;
 };
+
+const writeTweetToJSON = (
+  data: Twitter.ResponseData,
+  author: string,
+  lastId?: number
+) => {
+  const filteredData = data.map((tweet: any) => {
+    return {
+      tweet: tweet.text,
+      tweetId: tweet.id,
+      date: tweet.created_at,
+      favorites: tweet.favorite_count
+    };
+  });
+
+  const newFilteredData = filteredData.filter((tweet: any) => {
+    if (tweet.favorites > 10000) {
+      return tweet;
+    }
+  });
+
+  // write all tweets to same json file
+  fs.writeFile(
+    `${author}-master.json`,
+    JSON.stringify(newFilteredData),
+    { flag: 'a+' },
+    (error) => {
+      console.log(error);
+    }
+  );
+};
+
+const writeTweetToPDF = (data: Twitter.ResponseData) => {
+  const filteredData = data.map((tweet: any) => {
+    return {
+      tweet: tweet.text,
+      tweetId: tweet.id,
+      date: tweet.created_at,
+      favorites: tweet.favorite_count
+    };
+  });
+
+  const newFilteredData = filteredData.filter((tweet: any) => {
+    if (tweet.favorites > 10000) {
+      return tweet;
+    }
+  });
+
+  newFilteredData.forEach((e: any, index: any) => {
+    // console.log(e.tweet);
+    format.writeToPDF(e.tweet, username, index);
+  });
+  // writeToPDF(newFilteredData, newFilteredData.length);
+  console.log(newFilteredData.length);
+};
+
+// TODO: write JSON to PDF
+
+const readJSON = (jsonFile: JSON) => {
+  // json files to read
+  // read json files
+  // json.extend(master, new)
+  // return concatenated single json file
+};
+
+const tweetJSONtoPDF = (tweetJSON: JSON) => {};
 
 requestTweets(config);
