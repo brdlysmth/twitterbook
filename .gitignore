@@ -10,3 +10,5 @@ build
 pages/*
 
 .DS_Store
+
+/collections/*
