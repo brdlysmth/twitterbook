@@ -11,4 +11,4 @@ pages/*
 
 .DS_Store
 
-/collections/*
+src/collections/*
