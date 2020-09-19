@@ -7,6 +7,11 @@
 - title page
 - copyright?
 
+## Twitter
+
+- Twitter only returns 3200 at a time
+- Books will have to be limited in scope for now
+
 # Book Design
 
 Notes:
