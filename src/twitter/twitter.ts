@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import dotenv from 'dotenv';
 import fs from 'fs';
-import { parse } from 'path';
 import Twitter from 'twitter';
 
 dotenv.config();
@@ -95,19 +94,12 @@ const getLastTweet = async (data: Twitter.ResponseData) => {
     };
   });
 
+  // TODO: need to filter data by favorite count for easier processing
+
   const result = filteredData.reduce((r: any, o: any) =>
     o.date < r.date ? o : r
   );
 
-  // console.log(filteredData.length);
-  // console.log(typeof result.tweetId);
-
-  // const parsed = parseInt(result.tweetId);
-  // console.log(parsed);
-  // console.log(typeof parsed);
-
-  // const newId = parseInt(result.tweetId) - 100;
-  // console.log(newId);
   return result.tweetId;
 };
 
@@ -116,10 +108,7 @@ const checkForData = (data: Twitter.ResponseData) => {};
 const startTwitterFetchLoop = async (loop: number) => {
   const username = 'naval';
   const count = 100;
-  // const startId = 1283507218294292500;
-  // const startId = 1200760632867315712;
-  // const startId = 1170567931790364700;
-  const startId = 1170560000000000000;
+  const startId = 1283507218294292500;
 
   console.log('Starting loop... ');
 
@@ -166,4 +155,5 @@ const runTwitterFetchLoop = async (
   console.log('Loop finished.');
 };
 
-startTwitterFetchLoop(25);
+// max limit is 3200 tweets
+startTwitterFetchLoop(32);
