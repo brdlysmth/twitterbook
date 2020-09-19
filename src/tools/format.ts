@@ -1,9 +1,6 @@
 import PDFDocument from 'pdfkit';
 import fs from 'fs';
-import { write } from 'pdfkit/js/data';
-import { document } from 'pdfkit/js/page';
 import * as navalTweets from '../collections/naval-master.json';
-import { json } from 'express';
 
 type Collection = {
   tweet: string;
