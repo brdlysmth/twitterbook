@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import dotenv from 'dotenv';
 import fs from 'fs';
+import { parse } from 'path';
 import Twitter from 'twitter';
 
 dotenv.config();
@@ -30,6 +31,12 @@ const writeTweetToJSON = (data: Twitter.ResponseData, author: string) => {
   );
 };
 
+/**
+ * Working with twitter timelines: https://developer.twitter.com/en/docs/twitter-api/v1/tweets/timelines/guides/working-with-timelines
+ *
+ * https://gist.github.com/yanofsky/5436496
+ */
+
 // NOTES:
 /**
  * current scheme only works if every response has tweets in it
@@ -53,12 +60,13 @@ const writeTweetToJSON = (data: Twitter.ResponseData, author: string) => {
 
 const getHundredTweets = async (
   username: string,
-  startId: number,
+  startId: string | number | undefined,
   count: number
 ) => {
   const config: AxiosRequestConfig = {
     method: 'GET',
     url: `https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=${username}&max_id=${startId}&count=${count}?include_rts=1?`,
+    // url: `https://api.twitter.com/2/tweets/search/recent`,
     headers: {
       Authorization: 'Bearer ' + process.env.TWITTER_BEARER_TOKEN
     }
@@ -78,24 +86,10 @@ const getHundredTweets = async (
 
 const getLastTweet = async (data: Twitter.ResponseData) => {
   // filter by created_at which is UTC string
-
-  console.log(data.length);
-
-  if (!data) {
-    return;
-  }
-
-  if (data.length < 2) {
-    const newId = parseInt(data[0].id_str) - 10;
-    return newId.toString();
-  }
-  // if (filteredData.length < 2) {
-  //   return filteredData[0].tweetId + 1;
-  // }
   const filteredData = data.map((tweet: any) => {
     return {
       tweet: tweet.text,
-      tweetId: tweet.id_str,
+      tweetId: tweet.id,
       date: Date.parse(tweet.created_at),
       favorites: tweet.favorite_count
     };
@@ -105,13 +99,15 @@ const getLastTweet = async (data: Twitter.ResponseData) => {
     o.date < r.date ? o : r
   );
 
-  // if (result.tweetId == 1170567931790364673) {
-  //   console.log(filteredData);
-  //   console.log(result);
-  // }
+  // console.log(filteredData.length);
+  // console.log(typeof result.tweetId);
 
-  console.log(filteredData.length);
+  // const parsed = parseInt(result.tweetId);
+  // console.log(parsed);
+  // console.log(typeof parsed);
 
+  // const newId = parseInt(result.tweetId) - 100;
+  // console.log(newId);
   return result.tweetId;
 };
 
@@ -120,9 +116,10 @@ const checkForData = (data: Twitter.ResponseData) => {};
 const startTwitterFetchLoop = async (loop: number) => {
   const username = 'naval';
   const count = 100;
-  const startId = 1283507218294292500;
+  // const startId = 1283507218294292500;
+  // const startId = 1200760632867315712;
   // const startId = 1170567931790364700;
-  const endId = 1000000000000000000;
+  const startId = 1170560000000000000;
 
   console.log('Starting loop... ');
 
@@ -135,7 +132,7 @@ const startTwitterFetchLoop = async (loop: number) => {
 const runTwitterFetchLoop = async (
   username: string,
   count: number,
-  startId: number,
+  startId: string | number | undefined,
   loop: number
 ) => {
   console.log('Fetching data... ');
