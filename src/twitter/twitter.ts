@@ -117,3 +117,22 @@ const writeTweetToJSON = (
 };
 
 requestTweets(config);
+
+// NOTES:
+/**
+ * current scheme only works if every response has tweets in it
+ * need to get the first id from the previous set to do again
+ * or skip the processing and skip over the next few id's until
+ * some data meets our criteria
+ *
+ * Or, we could wait and process things until after we know there's a
+ * repsonse
+ *
+ * If data is zero we return lastMaxId plus one and keep iterating until
+ * data is returned that meets our criteria
+ *
+ * We get all the data regardless, maybe we don't do anything filtering at all
+ * until we have json files of all tweets
+ *
+ * The prospect of returning json files that are empty really messes up the program
+ */
