@@ -1,11 +1,11 @@
 import PDFDocument from 'pdfkit';
 import fs from 'fs';
-import * as navalTweets from '../collections/naval-master.json';
+import * as navalTweets from '../collections/naval-volume-1.json';
 
 type Collection = {
   tweet: string;
-  tweetId: number;
-  date: string;
+  tweetId: string;
+  date: number;
   favorites: number;
 };
 
@@ -23,8 +23,8 @@ export const createPDFDocument = (username: string) => {
     }
   });
 
-  doc.font('Courier');
-  doc.fontSize(25);
+  doc.font('src/assets/fonts/Arvo/Arvo-Regular.ttf');
+  doc.fontSize(20);
 
   doc.pipe(fs.createWriteStream(`${username}.pdf`)); // write to PDF
 

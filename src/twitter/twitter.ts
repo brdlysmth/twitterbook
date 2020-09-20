@@ -15,10 +15,16 @@ const writeTweetToJSON = (data: Twitter.ResponseData, author: string) => {
     };
   });
 
+  const reducedData = filteredData.filter((tweet: any) => {
+    if (tweet.favorites > 5000) {
+      return tweet;
+    }
+  });
+
   // write all tweets to same json file
   fs.writeFile(
     `${author}-master.json`,
-    JSON.stringify(filteredData),
+    JSON.stringify(reducedData),
     { flag: 'a+' },
     (error) => {
       if (error) {
@@ -94,29 +100,26 @@ const getLastTweet = async (data: Twitter.ResponseData) => {
     };
   });
 
-  // TODO: need to filter data by favorite count for easier processing
+  const reducedData = filteredData.filter((tweet: any) => {
+    if (tweet.favorites > 5000) {
+      return tweet;
+    }
+  });
 
-  const result = filteredData.reduce((r: any, o: any) =>
-    o.date < r.date ? o : r
-  );
-
-  return result.tweetId;
+  if (reducedData.length > 1) {
+    const result = reducedData.reduce((r: any, o: any) =>
+      o.date < r.date ? o : r
+    );
+    return result.tweetId;
+  } else {
+    const result = filteredData.reduce((r: any, o: any) =>
+      o.date < r.date ? o : r
+    );
+    return result.tweetId;
+  }
 };
 
-const checkForData = (data: Twitter.ResponseData) => {};
-
-const startTwitterFetchLoop = async (loop: number) => {
-  const username = 'naval';
-  const count = 100;
-  const startId = 1283507218294292500;
-
-  console.log('Starting loop... ');
-
-  const data = await getHundredTweets(username, startId, count);
-  const lastId = await getLastTweet(data);
-
-  await runTwitterFetchLoop(username, count, lastId, loop);
-};
+// const checkForData = (data: Twitter.ResponseData) => {};
 
 const runTwitterFetchLoop = async (
   username: string,
@@ -141,19 +144,29 @@ const runTwitterFetchLoop = async (
     if (lastIdArr.length > 0) {
       data = await getHundredTweets(username, lastIdArr[0], count);
 
-      // check if data is undefined
-
-      const dataExists = checkForData(data);
+      // check if data is undefined\
+      // const dataExists = checkForData(data);
 
       const lastId = await getLastTweet(data);
       console.log(`id ${index}: `, lastId);
       lastIdArr[0] = lastId;
-      console.log(lastIdArr);
     }
   }
 
   console.log('Loop finished.');
 };
 
+const startTwitterFetchLoop = async (username: string, loop: number) => {
+  const count = 100;
+  const startId = 1283507218294292500;
+
+  console.log('Starting loop... ');
+
+  const data = await getHundredTweets(username, startId, count);
+  const lastId = await getLastTweet(data);
+
+  await runTwitterFetchLoop(username, count, lastId, loop);
+};
+
 // max limit is 3200 tweets
-startTwitterFetchLoop(32);
+startTwitterFetchLoop('naval', 32);

@@ -11,6 +11,7 @@
 
 - Twitter only returns 3200 at a time
 - Books will have to be limited in scope for now
+- the 3,200 limit is for browsing the timeline only. Tweets can always be requested by their ID using the GET statuses/show/:id method
 
 # Book Design
 
