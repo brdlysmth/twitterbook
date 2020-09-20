@@ -1,6 +1,7 @@
-import PDFDocument from 'pdfkit';
+import PDFDocument, { bufferedPageRange, end } from 'pdfkit';
 import fs from 'fs';
 import * as navalTweets from '../collections/naval-volume-1.json';
+import { document } from 'pdfkit/js/page';
 
 type Collection = {
   tweet: string;
@@ -15,16 +16,18 @@ type Collection = {
 
 export const createPDFDocument = (username: string) => {
   const doc = new PDFDocument({
+    size: 'B6',
+    bufferPages: true,
     margins: {
-      top: 250,
-      bottom: 250,
+      top: 150,
+      bottom: 50,
       left: 75,
-      right: 75
+      right: 150
     }
   });
 
   doc.font('src/assets/fonts/Arvo/Arvo-Regular.ttf');
-  doc.fontSize(20);
+  doc.fontSize(15);
 
   doc.pipe(fs.createWriteStream(`${username}.pdf`)); // write to PDF
 
@@ -44,12 +47,23 @@ export const writeToPDF = (
 ) => {
   const author = `-- @${username}`;
 
+  doc.fontSize(10);
+  doc.text(`${index + 1}`, 335, doc.page.height - 25, {
+    lineBreak: false
+  });
+
+  doc.fontSize(15);
   doc.addPage().text(tweet, {
-    width: 300
+    width: 225
+  });
+
+  doc.text(' ', {
+    width: 225,
+    align: 'right'
   });
 
   doc.text(author, {
-    width: 300,
+    width: 225,
     align: 'right'
   });
 
@@ -59,10 +73,30 @@ export const writeToPDF = (
 const readJSON = (jsonFile: Collection[], username: string) => {
   const currentDocument = createPDFDocument(username);
 
+  // cover page
+  currentDocument.text(`Unplugged Books \n@${username} `, {
+    width: 225,
+    lineGap: 150,
+    align: 'center',
+    lineBreak: false
+  });
+
   Object.values(jsonFile).forEach((collection, index) => {
     writeToPDF(currentDocument, collection.tweet, username, index);
   });
 
+  // add page numbers
+  const range = currentDocument.bufferedPageRange();
+  const start = range.start;
+  const end = range.start + range.count;
+
+  for (let i = start; i < end; i++) {
+    currentDocument.switchToPage(i);
+    // bounding rectangle
+    currentDocument
+      .rect(currentDocument.x - 45, 35, currentDocument.x + 225, 425)
+      .stroke();
+  }
   // finalize the PDF and end the stream
   currentDocument.end();
 };
