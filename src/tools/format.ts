@@ -1,6 +1,6 @@
 import PDFDocument, { bufferedPageRange, end } from 'pdfkit';
 import fs from 'fs';
-import * as navalTweets from '../collections/naval-volume-1.json';
+import * as navalTweets from '../collections/codyko-master.json';
 import { document } from 'pdfkit/js/page';
 
 type Collection = {
@@ -101,4 +101,4 @@ const readJSON = (jsonFile: Collection[], username: string) => {
   currentDocument.end();
 };
 
-readJSON(navalTweets, 'naval');
+readJSON(navalTweets, 'codyko');

@@ -101,7 +101,7 @@ const getLastTweet = async (data: Twitter.ResponseData) => {
   });
 
   const reducedData = filteredData.filter((tweet: any) => {
-    if (tweet.favorites > 5000) {
+    if (tweet.favorites > 100) {
       return tweet;
     }
   });
@@ -169,4 +169,4 @@ const startTwitterFetchLoop = async (username: string, loop: number) => {
 };
 
 // max limit is 3200 tweets
-startTwitterFetchLoop('naval', 32);
+startTwitterFetchLoop('mrjohndarby', 32);

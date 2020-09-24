@@ -32,3 +32,7 @@ Spine width (n=100): 0.28522522522 in. (28px)
 
 - Cover dimensions:
   (528px + 28px) x 816 px = 556px x 816px (1668px x 2448px)
+
+### Research
+
+- https://dailyhive.com/vancouver/twitter-account-follow-isolation-coronavirus
