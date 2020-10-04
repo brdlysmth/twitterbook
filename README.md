@@ -47,6 +47,14 @@ Spine width (n=100): 0.28522522522 in. (28px)
   - Flexible on price, I'm aiming to get \$2 a book
   - Rest goes to them if they market it
 - Low Volume
+
   - Niche Twitter Influencers
   - Book prototype
   - Ad campaign for different books
+
+- Branding
+
+  - Wisdom, comedy, health, fitness
+  - Under one banner
+
+  - Political under another
