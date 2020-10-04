@@ -36,3 +36,17 @@ Spine width (n=100): 0.28522522522 in. (28px)
 ### Research
 
 - https://dailyhive.com/vancouver/twitter-account-follow-isolation-coronavirus
+
+### Strategy
+
+- Barbell Approach: High Volume vs. Low Volume
+- High Volume
+  - Use hashtag to gather content
+  - Book Prototype
+  - For twitter accounts mentioned, reach out to them
+  - Flexible on price, I'm aiming to get \$2 a book
+  - Rest goes to them if they market it
+- Low Volume
+  - Niche Twitter Influencers
+  - Book prototype
+  - Ad campaign for different books
