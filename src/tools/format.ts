@@ -1,6 +1,6 @@
 import PDFDocument, { bufferedPageRange, end } from 'pdfkit';
 import fs from 'fs';
-import * as navalTweets from '../collections/codyko-master.json';
+import * as navalTweets from '../collections/MelissaInfinity-master.json';
 import { document } from 'pdfkit/js/page';
 
 type Collection = {
@@ -57,6 +57,14 @@ export const writeToPDF = (
     width: 225
   });
 
+  doc
+    .moveTo(0, 20) // set the current point
+    .lineTo(100, 160) // draw a line
+    .quadraticCurveTo(130, 200, 150, 120) // draw a quadratic curve
+    .bezierCurveTo(190, -40, 200, 200, 300, 150) // draw a bezier curve
+    .lineTo(400, 90) // draw another line
+    .stroke(); // stroke the path
+
   doc.text(' ', {
     width: 225,
     align: 'right'
@@ -66,6 +74,17 @@ export const writeToPDF = (
     width: 225,
     align: 'right'
   });
+  doc
+    .moveTo(0, 20) // set the current point
+    .lineTo(100, 160) // draw a line
+    .quadraticCurveTo(130, 200, 150, 120) // draw a quadratic curve
+    .bezierCurveTo(190, -40, 200, 200, 300, 150) // draw a bezier curve
+    .lineTo(400, 90) // draw another line
+    .stroke(); // stroke the path
+
+  // Watermark
+  doc.fontSize(50);
+  doc.fillColor('grey').text('SAMPLE', { width: 250, align: 'bottom' });
 
   // pdf stream not yet finalized
 };
@@ -74,7 +93,15 @@ const readJSON = (jsonFile: Collection[], username: string) => {
   const currentDocument = createPDFDocument(username);
 
   // cover page
-  currentDocument.text(`Unplugged Books \n@${username} `, {
+  currentDocument.text(`@${username} \n`, {
+    width: 225,
+    lineGap: 150,
+    align: 'center',
+    lineBreak: false
+  });
+
+  currentDocument.fontSize(10);
+  currentDocument.text(`Unplugged Books`, {
     width: 225,
     lineGap: 150,
     align: 'center',
@@ -101,4 +128,4 @@ const readJSON = (jsonFile: Collection[], username: string) => {
   currentDocument.end();
 };
 
-readJSON(navalTweets, 'codyko');
+readJSON(navalTweets, 'MelissaInfinity');

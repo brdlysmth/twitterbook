@@ -16,7 +16,7 @@ const writeTweetToJSON = (data: Twitter.ResponseData, author: string) => {
   });
 
   const reducedData = filteredData.filter((tweet: any) => {
-    if (tweet.favorites > 5000) {
+    if (tweet.favorites > 10) {
       return tweet;
     }
   });
@@ -91,6 +91,7 @@ const getHundredTweets = async (
 
 const getLastTweet = async (data: Twitter.ResponseData) => {
   // filter by created_at which is UTC string
+
   const filteredData = data.map((tweet: any) => {
     return {
       tweet: tweet.text,
@@ -101,7 +102,7 @@ const getLastTweet = async (data: Twitter.ResponseData) => {
   });
 
   const reducedData = filteredData.filter((tweet: any) => {
-    if (tweet.favorites > 100) {
+    if (tweet.favorites > 10) {
       return tweet;
     }
   });
@@ -169,4 +170,4 @@ const startTwitterFetchLoop = async (username: string, loop: number) => {
 };
 
 // max limit is 3200 tweets
-startTwitterFetchLoop('mrjohndarby', 32);
+startTwitterFetchLoop('MelissaInfinity', 32);
